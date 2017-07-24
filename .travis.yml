@@ -1,0 +1,11 @@
+language: cpp
+
+# sudo: required
+
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+  - ./apps/myapp
+  
