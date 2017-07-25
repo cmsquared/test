@@ -16,20 +16,12 @@ script:
   - cp -vr docker ${HOME}/docker
   - cd ../../
   - mv -v ${TRAVIS_REPO_SLUG} $HOME/docker
+  - cd ${HOME}/docker/test
   - docker build -t ${TRAVIS_REPO_SLUG} ${HOME}/docker/ &&
     CON=$(docker run -d ${TRAVIS_REPO_SLUG}) &&
-    docker cp ${CON}:/home/test/build/doc .
-  - pwd
-  - ls
-  # - mkdir build
-  # - cd build
-  # - cmake ..
-  # - make
-  # - ./apps/myapp
-  # - make doxygen
-  # - pip3 install doctr
-  # - cd ..
-  # - doctr deploy . --built-docs build/doc/mytest/doxygen/html
+    docker cp ${CON}:/home/test/build .
+  - pip3 install doctr
+  - doctr deploy . --built-docs build/doc/mytest/doxygen/html
 
 env:
   global:

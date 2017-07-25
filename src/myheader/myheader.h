@@ -2,7 +2,7 @@
 #define MYHEADER_MYHEADER_H
 
 /*
-  @file
+  @file This is the new file description!
   @breif This is my data structure!
  */
 struct mydat {
