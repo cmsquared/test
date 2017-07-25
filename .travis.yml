@@ -4,23 +4,34 @@ language: cpp
 python:
   - "3.5"
 
-env:
-  global:
-    - secure: "W+YhJdSfNSsRdMEsEwIlf4c3/4gMXnwtD2cwdN4aNJ5/9mBrF4r7qVqR8NDh7Nx7vJOd1keb+5zN7Ee99cR7dFowUd0fRLZ47ltkKspbgGzd1KaBeZ0gn7z4czmrkhEblFW1OnGY8EjPLpuaw+zyB0Ejbp4h3sgto1EA4XzoJoR/2I0nCCHOEk1S+0o5smfRWeKOroLALnN9yGeficwKxS/+DBrdVaWgrv1LIZJvxhvVRu+FmSRrVgocWkW0faD7nR9VnHYvYQNhZnNjqJDlI1AH2JP7hcFFX8UUq118BRrIqciCtj+NTN8vIlfhtXxNKW4gaLOt1m8uohsdjyTp91ZuCjWJh65Jtjl0yFcm6SwV6af0ORscrZDuGB+bXOHmNWYHVI0nrh6dJrqNRkcmmPF5STT3liFNncL2LKgIqGImb7iwVIDPy4sNbg+IEYJNTV7jYstcacLc9YVFfSMDBeleBQv3Tq5CXJ5T7uEsHAoSlkCIRRAtjr6iXuHp4zbeOmoGWtQcQkEH9MpbCUewc1aC6bkpBX9V23B46Ia2FDiJrMvj0Ox68MSkeoHGmHJapN0FtUkps2KM8SATXZWyLxPQfM57oknlWSnfC/yK2Hm5kPGnVl/EuLKUsjhjusfKaS0R65Txvb+JwWWu6ihdsrdPG9KCuIpfgmH1ojspxpo="
+services:
+  - docker
 
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y doxygen
+# before_install:
+#   - sudo apt-get -qq update
+#   - sudo apt-get install -y doxygen
 
 script:
   - set -e
-  - mkdir build
-  - cd build
-  - cmake ..
-  - make
-  - ./apps/myapp
-  - make doxygen
-  - pip3 install doctr
-  - cd ..
-  - doctr deploy . --built-docs build/doc/mytest/doxygen/html
+  - cp -vr docker ${HOME}/docker
+  - cd ../../
+  - mv -v ${TRAVIS_REPO_SLUG} $HOME/docker
+  - docker build -t ${TRAVIS_REPO_SLUG} ${HOME}/docker/ &&
+    CON=$(docker run -d ${TRAVIS_REPO_SLUG}) &&
+    docker cp ${CON}:/home/test/build/doc .
+  - pwd
+  - ls
+  # - mkdir build
+  # - cd build
+  # - cmake ..
+  # - make
+  # - ./apps/myapp
+  # - make doxygen
+  # - pip3 install doctr
+  # - cd ..
+  # - doctr deploy . --built-docs build/doc/mytest/doxygen/html
+
+env:
+  global:
+    - secure: "W+YhJdSfNSsRdMEsEwIlf4c3/4gMXnwtD2cwdN4aNJ5/9mBrF4r7qVqR8NDh7Nx7vJOd1keb+5zN7Ee99cR7dFowUd0fRLZ47ltkKspbgGzd1KaBeZ0gn7z4czmrkhEblFW1OnGY8EjPLpuaw+zyB0Ejbp4h3sgto1EA4XzoJoR/2I0nCCHOEk1S+0o5smfRWeKOroLALnN9yGeficwKxS/+DBrdVaWgrv1LIZJvxhvVRu+FmSRrVgocWkW0faD7nR9VnHYvYQNhZnNjqJDlI1AH2JP7hcFFX8UUq118BRrIqciCtj+NTN8vIlfhtXxNKW4gaLOt1m8uohsdjyTp91ZuCjWJh65Jtjl0yFcm6SwV6af0ORscrZDuGB+bXOHmNWYHVI0nrh6dJrqNRkcmmPF5STT3liFNncL2LKgIqGImb7iwVIDPy4sNbg+IEYJNTV7jYstcacLc9YVFfSMDBeleBQv3Tq5CXJ5T7uEsHAoSlkCIRRAtjr6iXuHp4zbeOmoGWtQcQkEH9MpbCUewc1aC6bkpBX9V23B46Ia2FDiJrMvj0Ox68MSkeoHGmHJapN0FtUkps2KM8SATXZWyLxPQfM57oknlWSnfC/yK2Hm5kPGnVl/EuLKUsjhjusfKaS0R65Txvb+JwWWu6ihdsrdPG9KCuIpfgmH1ojspxpo="
 
