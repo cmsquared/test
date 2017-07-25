@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-RUN apt-get update && apt-get install -y make cmake git gcc-c++ doxygen
+RUN apt-get update && apt-get install -y make cmake git gcc g++ doxygen
 
 COPY test /home/test
 WORKDIR /home/test
